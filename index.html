@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue + TS</title>
+    <script src="https://cdn.jsdelivr.net/npm/jeep-sqlite/dist/jeep-sqlite.min.js"></script>
+  </head>
+  <body>
+    <jeep-sqlite id="jeep-sqlite"></jeep-sqlite>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const jeepSqlite = document.querySelector('jeep-sqlite');
+          if (jeepSqlite) {
+            await customElements.whenDefined('jeep-sqlite');
+            await jeepSqlite.initWebStore();
+            console.log('SQLite initialized successfully');
+          }
+        } catch (err) {
+          console.error('Error initializing SQLite:', err);
+        }
+      });
+    </script>
+  </body>
+</html>

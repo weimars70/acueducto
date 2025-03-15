@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">weimar-acueductos</string>
+    <string name="title_activity_main">weimar-acueductos</string>
+    <string name="package_name">com.weimar.acueductos</string>
+    <string name="custom_url_scheme">com.weimar.acueductos</string>
+</resources>
