@@ -22,12 +22,12 @@ const miniState = ref(false);
 const syncing = ref(false);
 
 const menuItems = [
-  {
+  /*{
     icon: 'dashboard',
     label: 'Dashboard',
     route: '/dashboard',
     closable: false,
-  },
+  },*/
   {
     icon: 'show_chart',
     label: 'Consumos',
@@ -39,7 +39,7 @@ const menuItems = [
     label: 'Datos Sincronizados',
     route: '/sync-data',
     closable: true,
-  },
+  }/*,
   {
     icon: 'request_quote',
     label: 'Subsidios',
@@ -75,7 +75,7 @@ const menuItems = [
     label: 'Configuración',
     route: '/settings',
     closable: true,
-  }
+  }*/
 ];
 
 const navigateTo = (item: typeof menuItems[0]) => {

@@ -12,7 +12,7 @@ export class InstalacionesService {
 
   async findOne(codigo: number) {
     try {
-      const sql = `SELECT codigo, codigo_medidor,nombre, sector as sector_nombre, direccion FROM view_instalaciones WHERE view_instalaciones.codigo= ${codigo} `;
+      const sql = `SELECT codigo, codigo_medidor,nombre,sector, sector as sector_nombre, direccion FROM view_instalaciones WHERE view_instalaciones.codigo= ${codigo} `;
 
       const installation = await this.installationRepository.query(sql);
 
@@ -40,10 +40,8 @@ export class InstalacionesService {
 
   async findAll() {
     try {
-      const installations = await this.installationRepository
-        .createQueryBuilder('view_instalaciones')
-        .orderBy('view_instalaciones.codigo', 'ASC')
-        .getMany();
+      const sql = `SELECT  * from view_instalaciones order by codigo `;
+      const installations = await this.installationRepository.query(sql);
 
       // Obtener lecturas anteriores y promedios para todas las instalaciones
       const readings = await Promise.all(

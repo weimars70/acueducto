@@ -26,7 +26,7 @@ export const installationService = {
           const installation = {
             ...data[0],
             codigo: numericCode,
-            lectura_anterior: Number(data.lactura_anterior) || 0,
+            lectura_anterior: Number(data.lectura_anterior) || 0,
             promedio: Number(data.promedio) || 0
           };
 

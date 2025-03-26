@@ -24,7 +24,7 @@ const handleSearch = async () => {
   loading.value = true;
   try {
     const installation = await installationService.getByCode(Number(codigo.value));
-    
+    console.log('____installation____', installation);
     if (!installation) {
       throw new Error('Instalación no encontrada');
     }

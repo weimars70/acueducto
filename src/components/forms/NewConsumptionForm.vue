@@ -194,6 +194,7 @@ const handleOtrosCobrosKeyup = (event: KeyboardEvent) => {
 };
 
 const onInstallationFound = async (installation: any) => {
+  console.log('installation:::', installation);
   formData.value = {
     ...formData.value,
     codigo: installation.codigo.toString(),
