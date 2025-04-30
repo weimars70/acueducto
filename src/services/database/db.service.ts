@@ -16,30 +16,9 @@ export class AppDatabase extends Dexie {
     super('acueductosDB');
     
     this.version(1).stores({
-      installations: 'codigo, codigo_medidor, nombre',
-      consumptions: 'codigo, instalacion, fecha',
+      installations: '++id, codigo, codigo_medidor, nombre',
+      consumptions: '++id, codigo, instalacion, fecha',
       offlineConsumptions: '++id, instalacion, fecha, syncStatus'
-    });
-
-    // Configurar manejo de errores para cada tabla
-    this.installations.hook('creating').subscribe({
-      error: error => this.handleError('installations', error)
-    });
-
-    this.consumptions.hook('creating').subscribe({
-      error: error => this.handleError('consumptions', error)
-    });
-
-    this.offlineConsumptions.hook('creating').subscribe({
-      error: error => this.handleError('offlineConsumptions', error)
-    });
-  }
-
-  private handleError(table: string, error: any): void {
-    console.error(`Database error in ${table}:`, {
-      name: error?.name,
-      message: error?.message,
-      stack: error?.stack
     });
   }
 }

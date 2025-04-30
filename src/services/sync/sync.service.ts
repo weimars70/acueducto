@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { storageService } from '../database/storage.service';
 import { consumptionService } from '../api/consumption.service';
 import { installationService } from '../api/installation.service';
+import { apiClient } from '../api/client';
 
 export class SyncService {
   private networkStatus: { connected: boolean } | null = null;
@@ -121,8 +122,30 @@ export class SyncService {
 
       // Sincronizar instalaciones
       const installations = await installationService.getAll();
+      //console.log('Iniciando sincronización de vistas...', installations);
       await storageService.saveInstallations(installations);
       console.log('Instalaciones sincronizadas');
+
+      // Obtener fecha actual
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      let currentMonth = currentDate.getMonth() ;
+      console.log('currentMonth:::', currentMonth);
+      currentMonth = currentMonth +1;
+    
+      // Obtener consumos del último mes
+      const { data: recentConsumptions } = await apiClient.get('/consumo/last-readings', {
+        params: {
+          year: currentYear,
+          month: currentMonth
+        }
+      });
+
+      //console.log('data retornada del back', recentConsumptions);
+      
+      // Guardar consumos recientes
+      await storageService.saveRecentConsumptions(recentConsumptions);
+      console.log('Consumos recientes sincronizados');
 
       // Sincronizar consumos pendientes
       await this.syncPendingData();

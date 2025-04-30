@@ -1,3 +1,4 @@
+```vue
 <script setup lang="ts">
 import { computed } from 'vue';
 import { months } from '../../../utils/dates';
@@ -38,9 +39,9 @@ const formatDate = (date: string) => {
 </script>
 
 <template>
-  <div class="row q-col-gutter-md">
+  <div class="row q-col-gutter-sm">
     <!-- Año -->
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-sm-4">
       <q-select
         :model-value="modelValue.year"
         :options="years"
@@ -54,7 +55,7 @@ const formatDate = (date: string) => {
     </div>
 
     <!-- Mes -->
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-sm-4">
       <q-select
         :model-value="modelValue.mes"
         :options="months"
@@ -70,7 +71,7 @@ const formatDate = (date: string) => {
     </div>
 
     <!-- Fecha -->
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-sm-4">
       <q-input
         :model-value="modelValue.fecha"
         label="Fecha"
@@ -94,3 +95,13 @@ const formatDate = (date: string) => {
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.row {
+  margin: 0 -4px;
+  > div {
+    padding: 0 4px;
+  }
+}
+</style>
+```

@@ -12,7 +12,7 @@ export class InstalacionesService {
 
   async findOne(codigo: number) {
     try {
-      const sql = `SELECT codigo, codigo_medidor,nombre,sector, sector as sector_nombre, direccion FROM view_instalaciones WHERE view_instalaciones.codigo= ${codigo} `;
+      const sql = `SELECT codigo, codigo_medidor,nombre, sector as sector_nombre, direccion FROM view_instalaciones WHERE view_instalaciones.codigo= ${codigo} `;
 
       const installation = await this.installationRepository.query(sql);
 
@@ -21,12 +21,10 @@ export class InstalacionesService {
       }
       // Obtener lectura anterior y promedio
       const result = await this.installationRepository.query(
-        `
-        SELECT lectura_anterior, promedio 
-        FROM get_previous_reading($1)
-      `,
+        ` SELECT lectura_anterior, promedio FROM get_previous_reading($1)`,
         [codigo],
       );
+     
       return {
         ...installation,
         lectura_anterior: result[0]?.lectura_anterior || 0,
@@ -49,11 +47,11 @@ export class InstalacionesService {
           const result = await this.installationRepository.query(
             `
             SELECT lectura_anterior, promedio 
-            FROM get_previous_reading($1, $1)
+            FROM get_previous_reading($1)
           `,
             [installation.codigo],
           );
-
+         
           return {
             ...installation,
             lectura_anterior: result[0]?.lectura_anterior || 0,

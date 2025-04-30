@@ -52,19 +52,32 @@ export class ConsumoController {
     return this.consumoService.findAll(pageNumber, pageSize, filters);
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.consumoService.findOne(parseInt(id, 10));
-  }
+ 
 
   @Get('last-readings')
   async getLastReadings(
-    @Query('year') year: string,
-    @Query('month') month: string,
+    @Query('year') year: number,
+    @Query('month') month: number,
   ) {
-    const yearNum = year ? parseInt(year, 10) : new Date().getFullYear();
-    const monthNum = month ? parseInt(month, 10) : new Date().getMonth() + 1;
-    return this.consumoService.getLastReadings(yearNum, monthNum);
+    console.log('year', year);
+    console.log('month', month);
+    //const yearNum = year ? parseInt(year, 10) : new Date().getFullYear();
+    //const monthNum = month ? parseInt(month, 10) : new Date().getMonth() + 1;
+    return this.consumoService.getLastReadings(year, month);
+  }
+
+
+  @Get('last-lecturas')
+  async getLastLecturas(
+    @Query('month') month: number,
+    @Query('year') year: number,
+  ) {
+    return this.consumoService.getLecturasMes( month,year);
+  }
+  
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.consumoService.findOne(parseInt(id, 10));
   }
 
   @Post()

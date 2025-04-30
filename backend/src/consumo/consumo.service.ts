@@ -45,12 +45,13 @@ export class ConsumoService implements OnModuleInit {
   }
 
   async findOne(id: number) {
+    console.log('id::::', id);
     try {
       // Validar que el ID sea un número válido
       if (isNaN(id) || !Number.isInteger(id)) {
         throw new Error('El ID debe ser un número entero válido');
       }
-
+      
       const consumption = await this.consumoRepository
         .createQueryBuilder('consumo')
         .where('consumo.codigo = :id', { id })
@@ -68,12 +69,7 @@ export class ConsumoService implements OnModuleInit {
 
   async getPreviousReading(instalacion: number, codigo: number) {
     try {
-      const result = await this.consumoRepository.query(
-        `
-        SELECT * FROM get_previous_reading($1, $2)
-      `,
-        [instalacion, codigo],
-      );
+      const result = await this.consumoRepository.query(`SELECT * FROM get_previous_reading($1)`,[instalacion],);
 
       if (!result || result.length === 0) {
         return {
@@ -150,16 +146,26 @@ export class ConsumoService implements OnModuleInit {
       throw new Error(`Error al obtener consumos: ${error.message}`);
     }
   }
+ 
+
+  async getLecturasMes( month: number, year: number){
+    try {
+      const result = await this.consumoRepository.query(
+        ` SELECT a.codigo as Instalacion,a.nombre,B.lectura, CASE WHEN B.lectura IS NULL THEN 'NO' ELSE 'SI' END AS REGISTRADA
+          FROM instalaciones a
+          LEFT JOIN CONSUMO B ON A.codigo=B.instalacion AND B.MES=$1 AND B.year=$2 order by a.codigo`,
+        [month, year],
+      );
+      return result;
+    } catch (error) {
+      throw new Error(`Error al obtener lectura anterior: ${error.message}`)
+    }
+  }
 
   async getLastReadings(year: number, month: number) {
+    console.log('year::', year);
     try {
-      const result = await this.consumoRepository
-        .createQueryBuilder('consumo')
-        .where('consumo.year = :year', { year })
-        .andWhere('consumo.mes = :month', { month })
-        .orderBy('consumo.fecha', 'DESC')
-        .addOrderBy('consumo.codigo', 'DESC')
-        .getMany();
+      const result = await this.consumoRepository.query(`SELECT * FROM consumo where year=$1 and mes =$2`,[year, month],)
 
       const latestReadings = new Map();
       result.forEach((reading) => {

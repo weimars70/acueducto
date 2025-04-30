@@ -67,9 +67,10 @@ export const installationService = {
   },
 
   async getAll(): Promise<Installation[]> {
+    
     try {
-      if (syncService.isOnline()) {
-        const { data } = await apiClient.get<Installation[]>('/instalaciones/all');
+      if (syncService.isOnline()) { 
+        const  { data } = await apiClient.get<Installation[]>('/instalaciones/all');
         return data;
       } else {
         return await storageService.getInstallations();

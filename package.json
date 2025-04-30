@@ -21,6 +21,7 @@
     "@quasar/extras": "^1.16.9",
     "@types/pdfkit": "^0.13.9",
     "axios": "^1.6.7",
+    "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "dexie": "^3.2.4",
     "dotenv": "^16.4.5",

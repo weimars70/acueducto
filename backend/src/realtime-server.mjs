@@ -87,7 +87,7 @@ io.on('connection', (socket) => {
 });
 
 // Inicializar servidor
-const PORT = process.env.REALTIME_PORT || 3001;
+const PORT = process.env.REALTIME_PORT || 3007;
 
 httpServer.listen(PORT, () => {
   console.log(`🚀 Servidor de tiempo real iniciado en puerto ${PORT}`);

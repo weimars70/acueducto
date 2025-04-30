@@ -5,5 +5,5 @@ export interface Installation {
   sector_nombre: string;
   direccion: string;
   promedio: number;
-  lactura_anterior: number;
+  lectura_anterior: number;
 }

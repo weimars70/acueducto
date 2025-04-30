@@ -89,7 +89,7 @@ const onRequest = async (props: any) => {
 };
 
 const setupSocketConnection = () => {
-  socket.value = io('http://localhost:3001', {
+  socket.value = io('http://108.181.193.178:3007', {
     transports: ['websocket'],
     autoConnect: true
   });

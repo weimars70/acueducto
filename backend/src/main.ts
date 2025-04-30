@@ -11,13 +11,24 @@ async function bootstrap() {
     origin: [
       'http://localhost:5173',
       'http://localhost',
-      'http://localhost:3006',
+      'http://108.181.193.178:5173', // <-- Agrega esta línea
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization,Accept,Cache-Control',
     exposedHeaders: 'Content-Type',
     credentials: true,
   });
+  /*app.enableCors({
+    origin: [
+      'http://localhost:5173',
+      'http://localhost',
+      'http://localhost:3006',
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization,Accept,Cache-Control',
+    exposedHeaders: 'Content-Type',
+    credentials: true,
+  });*/
 
   // Enable validation pipes
   app.useGlobalPipes(
