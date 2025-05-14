@@ -52,8 +52,6 @@ export class ConsumoController {
     return this.consumoService.findAll(pageNumber, pageSize, filters);
   }
 
- 
-
   @Get('last-readings')
   async getLastReadings(
     @Query('year') year: number,
@@ -66,15 +64,14 @@ export class ConsumoController {
     return this.consumoService.getLastReadings(year, month);
   }
 
-
   @Get('last-lecturas')
   async getLastLecturas(
     @Query('month') month: number,
     @Query('year') year: number,
   ) {
-    return this.consumoService.getLecturasMes( month,year);
+    return this.consumoService.getLecturasMes(month, year);
   }
-  
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.consumoService.findOne(parseInt(id, 10));
@@ -102,13 +99,13 @@ export class ConsumoController {
   @Header('Connection', 'keep-alive')
   events(): Observable<MessageEvent> {
     return this.consumoService.getConsumptionEvents().pipe(
-      map(event => {
+      map((event) => {
         const messageEvent = new MessageEvent('consumo_update', {
           data: JSON.stringify(event),
-          lastEventId: String(Date.now())
+          lastEventId: String(Date.now()),
         });
         return messageEvent;
-      })
+      }),
     );
   }
 }

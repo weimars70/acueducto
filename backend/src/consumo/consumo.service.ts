@@ -47,11 +47,10 @@ export class ConsumoService implements OnModuleInit {
   async findOne(id: number) {
     console.log('id::::', id);
     try {
-      // Validar que el ID sea un número válido
       if (isNaN(id) || !Number.isInteger(id)) {
         throw new Error('El ID debe ser un número entero válido');
       }
-      
+
       const consumption = await this.consumoRepository
         .createQueryBuilder('consumo')
         .where('consumo.codigo = :id', { id })
@@ -69,7 +68,10 @@ export class ConsumoService implements OnModuleInit {
 
   async getPreviousReading(instalacion: number, codigo: number) {
     try {
-      const result = await this.consumoRepository.query(`SELECT * FROM get_previous_reading($1)`,[instalacion],);
+      const result = await this.consumoRepository.query(
+        `SELECT * FROM get_previous_reading($1)`,
+        [instalacion],
+      );
 
       if (!result || result.length === 0) {
         return {
@@ -112,29 +114,65 @@ export class ConsumoService implements OnModuleInit {
 
   async findAll(page: number, limit: number, filters: Record<string, any>) {
     try {
-      const query = this.consumoRepository.createQueryBuilder('consumo');
+      let query = `
+        SELECT 
+          codigo,
+          instalacion,
+          nombre,
+          lectura,
+          fecha,
+          mes,
+          year,
+          mes_codigo,
+          consumo,
+          medidor,
+          otros_cobros,
+          reconexion,
+          facturado
+        FROM public.view_consumo
+        WHERE 1=1
+      `;
+
+      const queryParams: any[] = [];
+      let paramCount = 1;
 
       if (filters.nombre) {
-        query.andWhere('consumo.nombre ILIKE :nombre', {
-          nombre: `%${filters.nombre}%`,
-        });
-      }
-      if (filters.year) {
-        query.andWhere('consumo.year = :year', { year: filters.year });
-      }
-      if (filters.mes_codigo) {
-        query.andWhere('consumo.mes = :mes', { mes: filters.mes_codigo });
-      }
-      if (filters.instalacion) {
-        query.andWhere('consumo.instalacion = :instalacion', {
-          instalacion: filters.instalacion,
-        });
+        query += ` AND nombre ILIKE $${paramCount}`;
+        queryParams.push(`%${filters.nombre}%`);
+        paramCount++;
       }
 
-      const [data, total] = await query
-        .skip((page - 1) * limit)
-        .take(limit)
-        .getManyAndCount();
+      if (filters.year) {
+        query += ` AND year = $${paramCount}`;
+        queryParams.push(filters.year);
+        paramCount++;
+      }
+
+      if (filters.mes_codigo) {
+        query += ` AND mes_codigo = $${paramCount}`;
+        queryParams.push(filters.mes_codigo);
+        paramCount++;
+      }
+
+      if (filters.instalacion) {
+        query += ` AND instalacion = $${paramCount}`;
+        queryParams.push(filters.instalacion);
+        paramCount++;
+      }
+
+      // Obtener el total de registros
+      const countQuery = `SELECT COUNT(*) FROM (${query}) as count_query`;
+      const totalResult = await this.consumoRepository.query(
+        countQuery,
+        queryParams,
+      );
+      const total = parseInt(totalResult[0].count);
+
+      // Agregar paginación
+      query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+      queryParams.push(limit, (page - 1) * limit);
+
+      const data = await this.consumoRepository.query(query, queryParams);
 
       return {
         data,
@@ -146,26 +184,29 @@ export class ConsumoService implements OnModuleInit {
       throw new Error(`Error al obtener consumos: ${error.message}`);
     }
   }
- 
 
-  async getLecturasMes( month: number, year: number){
+  async getLecturasMes(month: number, year: number) {
     try {
       const result = await this.consumoRepository.query(
-        ` SELECT a.codigo as Instalacion,a.nombre,B.lectura, CASE WHEN B.lectura IS NULL THEN 'NO' ELSE 'SI' END AS REGISTRADA
+        ` SELECT a.codigo as Instalacion,a.nombre,c.nombre as sector,B.lectura, CASE WHEN B.lectura IS NULL THEN 'NO' ELSE 'SI' END AS REGISTRADA
           FROM instalaciones a
+          JOIN SECTOR C ON C.CODIGO=a.sector_codigo
           LEFT JOIN CONSUMO B ON A.codigo=B.instalacion AND B.MES=$1 AND B.year=$2 order by a.codigo`,
         [month, year],
       );
       return result;
     } catch (error) {
-      throw new Error(`Error al obtener lectura anterior: ${error.message}`)
+      throw new Error(`Error al obtener lectura anterior: ${error.message}`);
     }
   }
 
   async getLastReadings(year: number, month: number) {
     console.log('year::', year);
     try {
-      const result = await this.consumoRepository.query(`SELECT * FROM consumo where year=$1 and mes =$2`,[year, month],)
+      const result = await this.consumoRepository.query(
+        `SELECT * FROM consumo where year=$1 and mes =$2`,
+        [year, month],
+      );
 
       const latestReadings = new Map();
       result.forEach((reading) => {

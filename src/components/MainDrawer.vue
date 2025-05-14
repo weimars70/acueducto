@@ -22,12 +22,6 @@ const miniState = ref(false);
 const syncing = ref(false);
 
 const menuItems = [
-  /*{
-    icon: 'dashboard',
-    label: 'Dashboard',
-    route: '/dashboard',
-    closable: false,
-  },*/
   {
     icon: 'show_chart',
     label: 'Consumos',
@@ -35,47 +29,17 @@ const menuItems = [
     closable: true,
   },
   {
+    icon: 'list_alt',
+    label: 'Lecturas Mes',
+    route: '/monthly-readings',
+    closable: true,
+  },
+  {
     icon: 'storage',
     label: 'Datos Sincronizados',
     route: '/sync-data',
     closable: true,
-  }/*,
-  {
-    icon: 'request_quote',
-    label: 'Subsidios',
-    route: '/subsidies',
-    closable: true,
-  },
-  {
-    icon: 'location_city',
-    label: 'Sectores',
-    route: '/sectores',
-    closable: true,
-  },
-  {
-    icon: 'payments',
-    label: 'Tarifas',
-    route: '/tarifas',
-    closable: true,
-  },
-  {
-    icon: 'group_work',
-    label: 'Estratos',
-    route: '/estratos',
-    closable: true,
-  },
-  {
-    icon: 'people',
-    label: 'Usuarios',
-    route: '/users',
-    closable: true,
-  },
-  {
-    icon: 'settings',
-    label: 'Configuración',
-    route: '/settings',
-    closable: true,
-  }*/
+  }
 ];
 
 const navigateTo = (item: typeof menuItems[0]) => {

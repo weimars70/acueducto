@@ -9,9 +9,6 @@ const config: CapacitorConfig = {
     cleartext: true,
     hostname: 'localhost',
     allowNavigation: ['*']
-  },
-  android: {
-    allowMixedContent: true
   }
 };
 
