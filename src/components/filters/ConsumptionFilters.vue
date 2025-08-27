@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import YearSelect from './YearSelect.vue';
 import MonthSelect from './MonthSelect.vue';
 import SearchInput from './SearchInput.vue';
 import InstallationInput from './InstallationInput.vue';
 
+// Obtener año y mes actuales
+const currentDate = new Date();
+const currentYear = currentDate.getFullYear();
+const currentMonth = currentDate.getMonth() + 1; // getMonth() devuelve 0-11, necesitamos 1-12
+
 const filters = ref({
-  year: null as number | null,
-  mes_codigo: null as number | null,
+  year: currentYear as number | null,
+  mes_codigo: currentMonth as number | null,
   nombre: '' as string,
   instalacion: null as number | null
 });
@@ -22,13 +27,18 @@ const applyFilters = () => {
 
 const clearFilters = () => {
   filters.value = {
-    year: null,
-    mes_codigo: null,
+    year: currentYear,
+    mes_codigo: currentMonth,
     nombre: '',
     instalacion: null
   };
   emit('filter', filters.value);
 };
+
+// Aplicar filtros automáticamente al montar el componente
+onMounted(() => {
+  applyFilters();
+});
 </script>
 
 <template>

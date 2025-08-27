@@ -64,10 +64,9 @@ export const consumptionColumns = [
   },
   { 
     name: 'facturado', 
-    label: 'Estado', 
+    label: 'Facturado', 
     field: 'facturado', 
     sortable: true, 
-    align: 'center',
-    format: (val: boolean) => val ? 'Facturado' : 'Pendiente'
+    align: 'center'
   }
 ];

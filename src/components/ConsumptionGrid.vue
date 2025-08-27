@@ -96,7 +96,7 @@ const handleEdit = (consumption: Consumption) => {
                   size="sm" 
                   class="q-mr-xs" 
                 />
-                <span class="field-label">Estado:</span>
+                <span class="field-label">Facturado:</span>
                 <span class="text-body2">{{ item.facturado ? 'Facturado' : 'Pendiente' }}</span>
               </div>
             </div>

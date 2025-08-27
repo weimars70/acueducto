@@ -162,8 +162,11 @@
           row-key="instalacion"
           :loading="loading"
           :pagination="{
-            rowsPerPage: 21
+            rowsPerPage: 10
           }"
+            rows-per-page-label="Registros por página:"
+      no-data-label="No hay datos disponibles"
+      loading-label="Cargando..."
           flat
           bordered
           class="readings-table q-mt-xs"

@@ -25,7 +25,7 @@ const pagination = ref({
   descending: false,
   page: 1,
   rowsPerPage: 10,
-  rowsNumber: 0
+  rowsNumber: 0 // Esto debe ser actualizado por el backend
 });
 
 watch(isMobile, (newValue) => {
@@ -35,23 +35,63 @@ watch(isMobile, (newValue) => {
 const loadData = async () => {
   try {
     loading.value = true;
+    
+    // CAMBIO IMPORTANTE: Usar paginación real del servidor
     const response = await consumptionService.getConsumptions({
-      ...currentFilters.value,
       page: pagination.value.page,
-      limit: pagination.value.rowsPerPage
+      limit: pagination.value.rowsPerPage,
+      ...currentFilters.value
     });
     
-    consumptions.value = response.data;
-    pagination.value.rowsNumber = response.total;
+
+    if (response && response.data) {
+      console.log('✅ Datos encontrados:', {
+        dataLength: response.data.length,
+        dataType: typeof response.data,
+        isArray: Array.isArray(response.data),
+        firstItem: response.data[0] || 'No hay elementos'
+      });
+      
+      consumptions.value = response.data;
+      
+      // CAMBIO IMPORTANTE: Usar el total del servidor, no la longitud local
+      if (response.total !== undefined) {
+        pagination.value.rowsNumber = response.total;
+        console.log('📈 Total desde backend:', response.total);
+      } else {
+        // TEMPORAL: Simular 100 registros para probar
+        pagination.value.rowsNumber = 100; // Cambia esto por el total real
+        console.warn('⚠️ No se encontró total en la respuesta, usando valor temporal');
+      }
+      
+      console.log('🎯 Estado final:', {
+        consumptionsCount: consumptions.value.length,
+        paginationRowsNumber: pagination.value.rowsNumber,
+        currentPage: pagination.value.page,
+        rowsPerPage: pagination.value.rowsPerPage
+      });
+    } else {
+      console.warn('⚠️ No se encontraron datos o estructura incorrecta');
+      console.log('🔍 Detalles de respuesta vacía:', {
+        response,
+        hasResponse: !!response,
+        responseKeys: response ? Object.keys(response) : 'No response'
+      });
+      consumptions.value = [];
+      pagination.value.rowsNumber = 0;
+    }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Error al cargar los datos';
-    console.error('Error al cargar datos:', errorMessage);
-    $q.notify({
-      type: 'negative',
-      message: errorMessage
+    console.error('❌ Error al cargar datos:', error);
+    console.error('🔍 Detalles del error:', {
+      message: error instanceof Error ? error.message : 'Error desconocido',
+      stack: error instanceof Error ? error.stack : 'No stack trace',
+      type: typeof error
     });
+    consumptions.value = [];
+    pagination.value.rowsNumber = 0;
   } finally {
     loading.value = false;
+    console.log('🏁 Carga de datos finalizada');
   }
 };
 

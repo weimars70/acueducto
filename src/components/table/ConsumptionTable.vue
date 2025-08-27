@@ -48,78 +48,77 @@ const handleEdit = (consumption: Consumption) => {
       flat
       bordered
       binary-state-sort
+      :rows-per-page-options="[5, 10, 15, 20, 25, 50]"
+      rows-per-page-label="Registros por página:"
+      no-data-label="No hay datos disponibles"
+      loading-label="Cargando..."
+      selected-rows-label="Filas seleccionadas"
+      
     >
-      <template v-slot:header="props">
-        <q-tr :props="props">
-          <q-th
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-            class="bg-primary text-white"
-          >
-            {{ col.label }}
-          </q-th>
-          <q-th class="bg-primary text-white">
-            Acciones
-          </q-th>
-        </q-tr>
-      </template>
-
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-          >
-            <template v-if="col.name === 'facturado'">
-              <q-chip
-                :color="props.row.facturado ? 'positive' : 'warning'"
-                text-color="white"
-                size="sm"
+      <!-- Slot de paginación simplificado y corregido -->
+      <template v-slot:pagination="scope">
+        <div class="row items-center q-gutter-sm full-width">
+          <!-- Selector de registros por página -->
+        
+          
+          <!-- Información de rango calculada manualmente -->
+          <div class="col-auto text-caption">
+            {{ ((pagination.page - 1) * pagination.rowsPerPage) + 1 }}-{{ Math.min(pagination.page * pagination.rowsPerPage, pagination.rowsNumber) }} of {{ pagination.rowsNumber }}
+          </div>
+          
+          <!-- Spacer -->
+          <div class="col"></div>
+          
+          <!-- Información de página calculada manualmente -->
+          <div class="col-auto text-caption q-mx-sm">
+            Página {{ pagination.page }} de {{ Math.ceil(pagination.rowsNumber / pagination.rowsPerPage) }}
+          </div>
+          
+          <!-- Botones de navegación -->
+          <div class="col-auto">
+            <div class="row items-center q-gutter-xs">
+              <q-btn
+                icon="first_page"
+                color="grey-8"
+                round
                 dense
-              >
-                {{ props.row.facturado ? 'Facturado' : 'Pendiente' }}
-              </q-chip>
-            </template>
-            <template v-else>
-              {{ props.row[col.field] }}
-            </template>
-          </q-td>
-          <q-td>
-            <q-btn
-              flat
-              round
-              dense
-              color="primary"
-              icon="edit"
-              @click="handleEdit(props.row)"
-            >
-              <q-tooltip>
-                Editar consumo
-              </q-tooltip>
-            </q-btn>
-          </q-td>
-        </q-tr>
-      </template>
-
-      <template v-slot:loading>
-        <q-inner-loading showing color="primary">
-          <q-spinner size="50px" color="primary" />
-        </q-inner-loading>
-      </template>
-
-      <template v-slot:pagination="props">
-        <q-pagination
-          v-model="props.pagination.page"
-          :max="Math.ceil(props.pagination.rowsNumber / props.pagination.rowsPerPage)"
-          :max-pages="6"
-          boundary-links
-          direction-links
-          color="primary"
-          class="q-mt-sm pagination-controls"
-          @update:model-value="page => onPageChange(page, props.pagination)"
-        />
+                flat
+                :disable="pagination.page === 1"
+                @click="emit('request', { pagination: { ...pagination, page: 1 } })"
+              />
+              
+              <q-btn
+                icon="chevron_left"
+                color="grey-8"
+                round
+                dense
+                flat
+                :disable="pagination.page === 1"
+                @click="emit('request', { pagination: { ...pagination, page: pagination.page - 1 } })"
+              />
+              
+              <q-btn
+                icon="chevron_right"
+                color="grey-8"
+                round
+                dense
+                flat
+                :disable="pagination.page >= Math.ceil(pagination.rowsNumber / pagination.rowsPerPage)"
+                @click="emit('request', { pagination: { ...pagination, page: pagination.page + 1 } })"
+              />
+              
+              <q-btn
+                icon="last_page"
+                color="grey-8"
+                round
+                dense
+                flat
+                :disable="pagination.page >= Math.ceil(pagination.rowsNumber / pagination.rowsPerPage)"
+                @click="emit('request', { pagination: { ...pagination, page: Math.ceil(pagination.rowsNumber / pagination.rowsPerPage) } })"
+              />
+            </div>
+          </div>
+        </div>
       </template>
     </q-table>
   </div>
