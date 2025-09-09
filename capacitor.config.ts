@@ -4,8 +4,14 @@ const config: CapacitorConfig = {
   appId: 'com.weimar.acueductos',
   appName: 'weimar-acueductos',
   webDir: 'dist',
-  server: {
+  /*server: {
     androidScheme: 'http',
+    cleartext: true,
+    hostname: 'localhost',
+    allowNavigation: ['*']
+  }*/
+  server: {
+    androidScheme: 'capacitor',
     cleartext: true,
     hostname: 'localhost',
     allowNavigation: ['*']
