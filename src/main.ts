@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import { Quasar, Notify, Loading, Dialog } from 'quasar';
 import router from './router';
+import { useAuthStore } from './stores/auth';
 
 // Import Quasar css
 import '@quasar/extras/material-icons/material-icons.css';
@@ -25,5 +26,9 @@ app.use(Quasar, {
     Dialog
   }
 });
+
+// Initialize auth store after pinia is set up
+const authStore = useAuthStore();
+authStore.initializeAuth();
 
 app.mount('#app');

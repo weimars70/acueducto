@@ -47,17 +47,28 @@ const routes = [
         path: '/subsidies',
         component: () => import('../pages/SubsidiesPage.vue')
       },
+
       {
-        path: '/sectores',
+        path: 'sectores',
         component: () => import('../pages/generic-capture/SectorsPage.vue')
       },
       {
-        path: '/tarifas',
+        path: 'tarifas',
         component: () => import('../pages/generic-capture/TarifasPage.vue')
       },
       {
-        path: '/estratos',
+        path: 'estratos',
         component: () => import('../pages/generic-capture/EstratosPage.vue')
+      },
+      {
+        path: 'tipos-estrato',
+        component: () => import('../pages/generic-capture/TiposEstratoPage.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'factura-tipo',
+        component: () => import('../pages/generic-capture/FacturaTipoPage.vue'),
+        meta: { requiresAuth: true }
       }
     ]
   },
@@ -76,12 +87,14 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
   const tabsStore = useTabsStore();
   const isAuthenticated = authStore.isAuthenticated;
-
+  
+  // Si la ruta requiere autenticación y el usuario no está autenticado
   if (to.meta.requiresAuth && !isAuthenticated) {
     next('/login');
     return;
   }
-
+  
+  // Si el usuario está autenticado y trata de ir al login, redirigir al dashboard
   if (to.path === '/login' && isAuthenticated) {
     next('/dashboard');
     return;
@@ -100,7 +113,9 @@ router.beforeEach((to, from, next) => {
         { icon: 'request_quote', label: 'Subsidios', route: '/subsidies', closable: true },
         { icon: 'location_city', label: 'Sectores', route: '/sectores', closable: true },
         { icon: 'payments', label: 'Tarifas', route: '/tarifas', closable: true },
-        { icon: 'group_work', label: 'Estratos', route: '/estratos', closable: true }
+        { icon: 'group_work', label: 'Estratos', route: '/estratos', closable: true },
+        { icon: 'category', label: 'Tipos de Estrato', route: '/tipos-estrato', closable: true },
+        { icon: 'receipt', label: 'Factura Tipo', route: '/factura-tipo', closable: true }
       ];
       
       const menuItem = menuItems.find(item => item.route === to.path);

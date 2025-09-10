@@ -5,6 +5,7 @@ import { GenericCaptureDto } from './dto/generic-capture.dto';
 import { Sector } from '../entities/sector.entity';
 import { Tarifa } from '../entities/tarifa.entity';
 import { Estrato } from '../entities/estrato.entity';
+import { TiposEstrato } from '../entities/tipos-estrato.entity';
 
 @Injectable()
 export class GenericCaptureService {
@@ -16,12 +17,15 @@ export class GenericCaptureService {
     @InjectRepository(Tarifa)
     private readonly tarifasRepository: Repository<Tarifa>,
     @InjectRepository(Estrato)
-    private readonly estratosRepository: Repository<Estrato>
+    private readonly estratosRepository: Repository<Estrato>,
+    @InjectRepository(TiposEstrato)
+    private readonly tiposEstratoRepository: Repository<TiposEstrato>
   ) {
     this.repositories = {
       sectores: sectoresRepository,
       tarifas: tarifasRepository,
-      estratos: estratosRepository
+      estratos: estratosRepository,
+      estratos_tipo: tiposEstratoRepository
     };
   }
 
@@ -36,11 +40,16 @@ export class GenericCaptureService {
   async create(data: GenericCaptureDto) {
     try {
       const repository = this.getRepository(data.tabla);
-      const entity = repository.create({
+      const entityData: any = {
         codigo: data.codigo,
-        nombre: data.nombre,
-        abreviado: data.abreviado
-      });
+        nombre: data.nombre
+      };
+      
+      if (data.abreviado !== undefined) {
+        entityData.abreviado = data.abreviado;
+      }
+      
+      const entity = repository.create(entityData);
       return await repository.save(entity);
     } catch (error) {
       throw new Error(`Error en captura genérica: ${error.message}`);
@@ -58,10 +67,15 @@ export class GenericCaptureService {
         throw new Error(`Registro no encontrado en ${data.tabla}`);
       }
 
-      Object.assign(entity, {
-        nombre: data.nombre,
-        abreviado: data.abreviado
-      });
+      const updateData: any = {
+        nombre: data.nombre
+      };
+      
+      if (data.abreviado !== undefined) {
+        updateData.abreviado = data.abreviado;
+      }
+
+      Object.assign(entity, updateData);
 
       return await repository.save(entity);
     } catch (error) {

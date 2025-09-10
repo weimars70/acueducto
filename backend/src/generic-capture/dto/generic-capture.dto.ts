@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GenericCaptureDto {
@@ -12,10 +12,10 @@ export class GenericCaptureDto {
   @IsString()
   nombre: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
-  abreviado: string;
+  abreviado?: string;
 
   @ApiProperty()
   @IsNotEmpty()
